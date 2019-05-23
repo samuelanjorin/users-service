@@ -27,6 +27,10 @@ const isValueValid = (id) => {
   return { valid, parsedId }
 }
 const createCustomerJSON = (customer, accessToken) => {
+  let credit_card = customer.credit_card
+  if (customer.credit_card !== (null || '')) {
+    customer.creditCard = maskCreditCard(credit_card)
+  }
   let customerDetails = {
     customer: { schema: removePassword(customer) }
   }
@@ -47,9 +51,13 @@ function convertObjectValuesRecursive (obj, target, replacement) {
   })
   return obj
 }
+
 function getToken (req) {
   const { user_key } = req
   const userKey = user_key.split(' ')
   return userKey[1]
 }
-export default { getKeyByValue, getUniqueId, getPageParams, isValueValid, createCustomerJSON, convertObjectValuesRecursive, getToken }
+function maskCreditCard (creditCard) {
+  return ((creditCard.length === 12) ? 'XXXXXXXX' + creditCard.substr(8, creditCard.length - 1) : creditCard)
+}
+export default { getKeyByValue, getUniqueId, getPageParams, isValueValid, createCustomerJSON, convertObjectValuesRecursive, getToken, maskCreditCard }

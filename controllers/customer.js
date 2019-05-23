@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 import isEmpty from 'lodash.isempty'
 import customerService from '../services/customer'
-import { removePassword } from '../utils/passwordcrypt'
-import networkStatus from '../utils/networkStatus'
 import asyncF from '../middlewares/async'
 import globalFunc from '../utils/globalfunc'
 import constants from '../constants/index'
@@ -53,7 +51,7 @@ function getCustomer () {
 function updateCustomerDetails () {
   return asyncF(async (req, res) => {
     const response = await customerService.updateCustomerDetails(req)
-   // console.log('customer_id', response)
+    response.customer.dataValues.credit_card = globalFunc.maskCreditCard(response.customer.dataValues.credit_card)
     let customerJSON = globalFunc.convertObjectValuesRecursive(response.customer.dataValues, null, '')
     return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   }
@@ -62,10 +60,10 @@ function updateCustomerDetails () {
 
 function updateCustomerCreditCard () {
   return asyncF(async (req, res) => {
-    const { customer } = req
-    const updatedCustomer = await customer.updateCustomerCreditCard(req.body)
-    return networkStatus.httpSuccessResponse(
-      req, res, removePassword(updatedCustomer.dataValues), false)
+    const response = await customerService.updateCustomerCreditCard(req)
+    response.customer.dataValues.credit_card = globalFunc.maskCreditCard(response.customer.dataValues.credit_card)
+    let customerJSON = globalFunc.convertObjectValuesRecursive(response.customer.dataValues, null, '')
+    return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   })
 }
 

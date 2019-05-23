@@ -81,13 +81,15 @@ async function confirmPassword (password, email) {
   return constants.ERROR_CODES.USR_01
 }
 
-async function updateCustomerCreditCard (user) {
-  const customer = getCustomerById(user.customer_id)
-  customer.credit_card = user.credit_card
-  await customer.save()
-  await customer.reload()
-  return customer
-};
+async function updateCustomerCreditCard (req) {
+  await customerDb.update(
+    req.body,
+    { returning: true, where: { customer_id: req.user.customer_id } }
+  )
+
+  let customer = await getCustomerById(req.user.customer_id)
+  return { customer }
+}
 
 async function updateCustomerAddress (req) {
   await customerDb.update(
@@ -99,7 +101,7 @@ async function updateCustomerAddress (req) {
   return { customer }
 }
 async function updateCustomerDetails (req) {
-  // req.body.password = hashPassword(req.body.password)
+  req.body.password = hashPassword(req.body.password)
   await customerDb.update(
     req.body,
     { returning: true, where: { customer_id: req.user.customer_id } }
