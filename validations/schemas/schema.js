@@ -96,10 +96,8 @@ const country = Joi.string()
   .trim()
   .label('country')
 
-const shipping_region_id = Joi.string()
-  .required()
+const shipping_region_id = Joi.number().integer()
   .min(1)
-  .trim()
   .label('shipping_region_id')
 
 const credit_card = Joi.string()

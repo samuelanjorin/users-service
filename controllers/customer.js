@@ -69,10 +69,23 @@ function updateCustomerCreditCard () {
 }
 
 function updateCustomerAddress () {
-  asyncF(async (req, res) => {
-    const updatedCustomer = await customer.updateCustomerAddress(req.body)
-    return networkStatus.httpSuccessResponse(
-      req, res, removePassword(updatedCustomer.dataValues), false)
+  return asyncF(async (req, res) => {
+    const { user_key } = req.headers
+    const userKey = user_key.split(' ')
+    const access_token = userKey[1]
+    const response = await customerService.updateCustomerAddress(req)
+    if (response === constants.ERROR_CODES.USR_03) {
+      let error = errorFormat(
+        { code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_03),
+          msg: response,
+          param: 'email',
+          status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
+      )
+      return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
+    }
+    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, access_token)
+    customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
+    return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
   }
   )
 }
@@ -109,7 +122,7 @@ function loginCustomer () {
       )
       return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
     }
-    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues)
+    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, response.token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
     return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
   })

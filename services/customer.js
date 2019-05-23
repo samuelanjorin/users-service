@@ -8,20 +8,20 @@ import constants from '../constants/index'
 const customerDb = db.customer
 
 async function getCustomerById (customer_id) {
-  const customer = await customerDb.findOne({
+  let customer = await customerDb.findOne({
     where: { customer_id }
   })
-
   return customer
 }
 
-async function getCustomerByEmail (email, passwordCheck) {
-  const customer = await customerDb.findOne({
+async function getCustomerByEmail (email, deletePassword) {
+  let customer = await customerDb.findOne({
     where: { email }
   })
+
   if (customer !== null) {
-    if (passwordCheck === false) {
-      return removePassword(customer)
+    if (deletePassword === true) {
+      return removePassword(customer.dataValues)
     }
   }
   return customer
@@ -29,11 +29,11 @@ async function getCustomerByEmail (email, passwordCheck) {
 
 async function createCustomer (payLoad) {
   payLoad.password = hashPassword(payLoad.password)
-  let customer = await getCustomerByEmail(payLoad.email)
+  let customer = await getCustomerByEmail(payLoad.email, true)
 
   if (customer === null) {
     await customerDb.create(payLoad)
-    customer = await getCustomerByEmail(payLoad.email)
+    customer = await getCustomerByEmail(payLoad.email, true)
     const access_token = authenticate.generateToken(customer.dataValues.customer_id)
     return { customer: removePassword(customer.dataValues), access_token }
   } else {
@@ -48,16 +48,15 @@ async function facebookLogin (access_token) {
       return constants.ERROR_CODES.USR_03
     }
     payLoad.password = '@#$%^!@#$@##$$$$%%^^^!@@###$$'
-    let customer = await getCustomerByEmail(payLoad.email)
+    let customer = await getCustomerByEmail(payLoad.email, true)
     if (customer === null) {
       await customerDb.create(payLoad)
-      customer = await getCustomerByEmail(payLoad.email)
+      customer = await getCustomerByEmail(payLoad.email, true)
     }
+    return { customer: customer, access_token }
   } catch (err) {
     return constants.ERROR_CODES.USR_03
   }
-
-  return { customer: customer, access_token }
 }
 
 async function getLoginDetails (password, email) {
@@ -70,7 +69,7 @@ async function getLoginDetails (password, email) {
 }
 
 async function confirmPassword (password, email) {
-  let customer = await getCustomerByEmail(email)
+  let customer = await getCustomerByEmail(email, false)
   if (customer !== null) {
     let status = comparePassword(password, customer.password)
     if (status) {
@@ -84,16 +83,21 @@ async function confirmPassword (password, email) {
 
 async function updateCustomerDetails (user) {
   const { name, email, password, day_phone, eve_phone, mob_phone } = user
-  const customer = getCustomerByEmail(email)
-  customer.name = name
-  customer.email = email
-  customer.password = hashPassword(password)
-  customer.day_phone = day_phone
-  customer.eve_phone = eve_phone
-  customer.mob_phone = mob_phone
-  await customer.save()
-  await customer.reload()
-  return customer
+  const customerValue = await getCustomerByEmail(email)
+  let customer = customerValue.dataValues
+
+  if (customer !== null) {
+    customer.name = name
+    customer.email = email
+    customer.password = hashPassword(password)
+    customer.day_phone = day_phone
+    customer.eve_phone = eve_phone
+    customer.mob_phone = mob_phone
+    await customer.save()
+    await customer.reload()
+    return customer
+  }
+  return constants.ERROR_CODES.USR_03
 }
 
 async function updateCustomerCreditCard (user) {
@@ -104,19 +108,14 @@ async function updateCustomerCreditCard (user) {
   return customer
 };
 
-async function updateCustomerAddress (user) {
-  const customer = getCustomerById(user.customer_id)
-  const { address_1, address_2, city, region, postal_code, country, shipping_region_id } = user
-  customer.address_1 = address_1
-  customer.region = region
-  customer.postal_code = postal_code
-  customer.address_2 = address_2
-  customer.city = city
-  customer.country = country
-  customer.shipping_region_id = shipping_region_id
-  await customer.save()
-  await customer.reload()
-  return customer
+async function updateCustomerAddress (req) {
+  await customerDb.update(
+    req.body,
+    { returning: true, where: { customer_id: req.user.customer_id } }
+  )
+
+  let customer = await getCustomerById(req.user.customer_id)
+  return { customer }
 }
 
 export default {
