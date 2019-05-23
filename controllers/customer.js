@@ -91,7 +91,7 @@ function facebookLogin () {
       )
       return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
     }
-    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues)
+    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, access_token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
     return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
   })

@@ -41,16 +41,20 @@ async function createCustomer (payLoad) {
   }
 }
 async function facebookLogin (access_token) {
-  let payLoad = await facebookVerification(access_token)
-  payLoad = payLoad.data
-  if (payLoad.email === (null || '')) {
+  try {
+    let payLoad = await facebookVerification(access_token)
+    payLoad = payLoad.data
+    if (payLoad.email === (null || '')) {
+      return constants.ERROR_CODES.USR_03
+    }
+    payLoad.password = '@#$%^!@#$@##$$$$%%^^^!@@###$$'
+    let customer = await getCustomerByEmail(payLoad.email)
+    if (customer === null) {
+      await customerDb.create(payLoad)
+      customer = await getCustomerByEmail(payLoad.email)
+    }
+  } catch (err) {
     return constants.ERROR_CODES.USR_03
-  }
-  payLoad.password = '@#$%^!@#$@##$$$$%%^^^!@@###$$'
-  let customer = await getCustomerByEmail(payLoad.email)
-  if (customer === null) {
-    await customerDb.create(payLoad)
-    customer = await getCustomerByEmail(payLoad.email)
   }
 
   return { customer: customer, access_token }
