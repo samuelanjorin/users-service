@@ -27,10 +27,12 @@ const isValueValid = (id) => {
   return { valid, parsedId }
 }
 const createCustomerJSON = (customer, accessToken) => {
-  let credit_card = customer.credit_card
-  if (customer.credit_card !== (null || '')) {
+  
+  if (customer.credit_card !== null) {
+    let credit_card = customer.credit_card
     customer.creditCard = maskCreditCard(credit_card)
   }
+
   let customerDetails = {
     customer: { schema: removePassword(customer) }
   }

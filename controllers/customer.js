@@ -24,7 +24,10 @@ function signupCustomer () {
       )
       return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
     }
+
+
     let customerJSON = globalFunc.createCustomerJSON(response.customer, response.access_token)
+    console.log(customerJSON)
     if (customerJSON !== null) {
       customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
       return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)

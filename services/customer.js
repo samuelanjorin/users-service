@@ -34,8 +34,8 @@ async function createCustomer (payLoad) {
   if (customer === null) {
     await customerDb.create(payLoad)
     customer = await getCustomerByEmail(payLoad.email, true)
-    const access_token = authenticate.generateToken(customer.dataValues.customer_id)
-    return { customer: removePassword(customer.dataValues), access_token }
+    const access_token = authenticate.generateToken(customer.customer_id)
+    return { customer, access_token }
   } else {
     return constants.ERROR_CODES.USR_04
   }
@@ -101,6 +101,7 @@ async function updateCustomerAddress (req) {
   return { customer }
 }
 async function updateCustomerDetails (req) {
+  console.log(req)
   req.body.password = hashPassword(req.body.password)
   await customerDb.update(
     req.body,
