@@ -19,8 +19,10 @@ async function getCustomerByEmail (email, passwordCheck) {
   const customer = await customerDb.findOne({
     where: { email }
   })
-  if (passwordCheck === false) {
-    return removePassword(customer)
+  if (customer !== null) {
+    if (passwordCheck === false) {
+      return removePassword(customer)
+    }
   }
   return customer
 }
@@ -39,21 +41,26 @@ async function createCustomer (payLoad) {
   }
 }
 
-async function getLoginDetails (password, email, signUp = false) {
-  let customer
-  if (signUp !== true) {
-    customer = await confirmPassword(password, email)
+async function getLoginDetails (password, email) {
+  let customer = await confirmPassword(password, email)
+  if (customer !== constants.ERROR_CODES.USR_01) {
+    const token = authenticate.generateToken(customer.customer_id)
+    return { customer, token }
   }
-  const token = authenticate.generateToken(customer.customer_id)
-  return { customer, token }
+  return constants.ERROR_CODES.USR_01
 }
 
 async function confirmPassword (password, email) {
-  const customer = await getCustomerByEmail(email)
-  let status = comparePassword(password, customer.password)
-  if (status) {
-    return customer
+  let customer = await getCustomerByEmail(email)
+  if (customer !== null) {
+    let status = comparePassword(password, customer.password)
+    if (status) {
+      return customer
+    }
+    return constants.ERROR_CODES.USR_01
   }
+
+  return constants.ERROR_CODES.USR_01
 }
 
 async function updateCustomerDetails (user) {

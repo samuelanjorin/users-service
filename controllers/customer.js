@@ -25,12 +25,11 @@ function signupCustomer () {
           status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
       )
       return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
-    } else {
-      let customerJSON = globalFunc.createCustomerJSON(response.customer, response.access_token)
-      if (customerJSON !== null) {
-        customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
-        return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
-      }
+    }
+    let customerJSON = globalFunc.createCustomerJSON(response.customer, response.access_token)
+    if (customerJSON !== null) {
+      customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
+      return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
     }
   })
 }
@@ -97,12 +96,19 @@ function facebookLogin () {
 function loginCustomer () {
   return asyncF(async (req, res) => {
     const { email, password } = req.body
-    const customer = await customerService.getToken(password, email)
-
-    if (!isEmpty(customer)) {
-      const customerJSON = globalFunc.createCustomerJSON(customer)
-      return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
+    const response = await customerService.getLoginDetails(password, email)
+    if (response === constants.ERROR_CODES.USR_01) {
+      let error = errorFormat(
+        { code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_01),
+          msg: response,
+          param: 'email',
+          status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
+      )
+      return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
     }
+    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues)
+    customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
+    return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
   })
 }
 
