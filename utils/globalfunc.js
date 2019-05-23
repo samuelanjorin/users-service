@@ -47,5 +47,9 @@ function convertObjectValuesRecursive (obj, target, replacement) {
   })
   return obj
 }
-
-export default { getKeyByValue, getUniqueId, getPageParams, isValueValid, createCustomerJSON, convertObjectValuesRecursive }
+function getToken (req) {
+  const { user_key } = req
+  const userKey = user_key.split(' ')
+  return userKey[1]
+}
+export default { getKeyByValue, getUniqueId, getPageParams, isValueValid, createCustomerJSON, convertObjectValuesRecursive, getToken }

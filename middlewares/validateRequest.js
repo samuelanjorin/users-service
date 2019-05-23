@@ -5,7 +5,7 @@ import {
   signInSchema,
   updateCustomerAddressSchema,
   updateCustomerCreditCardSchema,
-  updateCustomerProfileBiodataSchema,
+  updateCustomerDetailsSchema,
   productReviewSchema,
   facebookSchema
 } from '../validations/schemas/schema'
@@ -22,7 +22,7 @@ const getSchema = req => {
     '/login': signInSchema,
     '/address': updateCustomerAddressSchema,
     '/creditCard': updateCustomerCreditCardSchema,
-    '/customer': updateCustomerProfileBiodataSchema,
+    '/customer': updateCustomerDetailsSchema,
     '/reviews': productReviewSchema,
     '/facebook': facebookSchema
   }

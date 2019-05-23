@@ -40,26 +40,6 @@ const password = Joi.string()
   .required()
   .trim()
   .label('Password')
-  .error(errors => {
-    return errorFormatter(
-      errors,
-      'Password',
-      'Password must be atleast 4 words'
-    )
-  })
-
-const passwordUpdate = Joi.string()
-  .min(4)
-  .required()
-  .trim()
-  .label('Password')
-  .error(errors => {
-    return errorFormatter(
-      errors,
-      'Password',
-      'Password must be atleast 4 words'
-    )
-  })
 
 const address_2 = Joi.string()
   .allow('')
@@ -107,19 +87,19 @@ const credit_card = Joi.string()
   .label('credit_card')
 
 const day_phone = Joi.string()
-  .allow('')
+  .required()
   .trim()
   .strict()
   .label('day_phone')
 
 const eve_phone = Joi.string()
-  .allow('')
+  .required()
   .trim()
   .strict()
   .label('eve_phone')
 
 const mob_phone = Joi.string()
-  .allow('')
+  .required()
   .trim()
   .strict()
   .label('mob_phone')
@@ -150,10 +130,10 @@ export const signInSchema = Joi.object().keys({
     .required()
 })
 
-export const updateCustomerProfileBiodataSchema = Joi.object().keys({
+export const updateCustomerDetailsSchema = Joi.object().keys({
   name,
   email,
-  password: passwordUpdate,
+  password,
   mob_phone,
   eve_phone,
   day_phone

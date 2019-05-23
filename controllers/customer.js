@@ -50,13 +50,14 @@ function getCustomer () {
   })
 }
 
-function updateCustomerBiodata () {
+function updateCustomerDetails () {
   return asyncF(async (req, res) => {
-    const { customer } = req
-    const updatedCustomer = await customer.updateCustomerFields(req.body)
-    return networkStatus.httpSuccessResponse(
-      req, res, removePassword(updatedCustomer.dataValues), false)
-  })
+    const response = await customerService.updateCustomerDetails(req)
+   // console.log('customer_id', response)
+    let customerJSON = globalFunc.convertObjectValuesRecursive(response.customer.dataValues, null, '')
+    return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_SUCCESS)
+  }
+  )
 }
 
 function updateCustomerCreditCard () {
@@ -70,19 +71,8 @@ function updateCustomerCreditCard () {
 
 function updateCustomerAddress () {
   return asyncF(async (req, res) => {
-    const { user_key } = req.headers
-    const userKey = user_key.split(' ')
-    const access_token = userKey[1]
+    let access_token = globalFunc.getToken(req.headers)
     const response = await customerService.updateCustomerAddress(req)
-    if (response === constants.ERROR_CODES.USR_03) {
-      let error = errorFormat(
-        { code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_03),
-          msg: response,
-          param: 'email',
-          status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
-      )
-      return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
-    }
     let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, access_token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
     return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
@@ -131,7 +121,7 @@ function loginCustomer () {
 export default {
   getCustomer,
   updateCustomerAddress,
-  updateCustomerBiodata,
+  updateCustomerDetails,
   updateCustomerCreditCard,
   facebookLogin,
   loginCustomer,
