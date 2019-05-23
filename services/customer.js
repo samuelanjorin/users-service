@@ -4,7 +4,9 @@ import facebookVerification from '../utils/verifyFacebookToken'
 import { removePassword, comparePassword, hashPassword } from '../utils/passwordcrypt'
 import authenticate from '../middlewares/authenticate'
 import constants from '../constants/index'
+import redisCache from '../utils/cache'
 
+redisCache.addToCache()
 const customerDb = db.customer
 
 async function getCustomerById (customer_id) {
@@ -101,7 +103,6 @@ async function updateCustomerAddress (req) {
   return { customer }
 }
 async function updateCustomerDetails (req) {
-  console.log(req)
   req.body.password = hashPassword(req.body.password)
   await customerDb.update(
     req.body,

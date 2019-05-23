@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import morgan from 'morgan'
 import logger from './utils/errors/errorlogger'
 import routeDependencies from './routes/routedependencies'
+// import redis from './config/redis'
 
 const app = express()
 app.use(helmet())
@@ -17,12 +18,10 @@ const port = process.env.RACS_PORT || 7001
 app.listen(port, () => {
   console.log(`Listening to port ${port}.......`)
 })
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: __dirname })
-})
+
 
 process.on('uncaughtException', (ex) => {
-  logger.error(ex.message, ex)
+  // logger.error(ex.message, ex)
 })
 process.on('unhandledRejection', (ex) => {
   logger.error(ex.message, ex)

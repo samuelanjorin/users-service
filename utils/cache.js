@@ -26,12 +26,12 @@ function lookCache (req, res, next) {
   })
 }
 
-function addToCache (url, data, type) {
+function addToCache (key, data, type) {
   if (type === constants.CACHE_TYPES.hour) {
-    client.setex(`turing_request: ${url}`, constants.CACHE_HOUR.one, JSON.stringify(data))
+    client.setex(`turing_request: ${key}`, constants.CACHE_HOUR.one, JSON.stringify(data))
   }
   if (type === constants.CACHE_TYPES.day) {
-    client.setex(`turing_request: ${url}`, constants.CACHE_HOUR.twenty_four, JSON.stringify(data))
+    client.setex(`turing_request: ${key}`, constants.CACHE_HOUR.twenty_four, JSON.stringify(data))
   }
 }
 export default { lookCache, addToCache }

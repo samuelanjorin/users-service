@@ -1,16 +1,23 @@
+// import redis from 'redis'
+// import envconfig from './envconfig'
+// import logger from '../utils/errors/errorlogger'
+
+// let redisConfig = envconfig.redis
+// redis.createClient(redisConfig.port, redisConfig.host, {
+//   password: redisConfig.password
+// })
+
 import redis from 'redis'
-import envconfig from './envconfig'
-import logger from '../utils/errors/errorlogger'
+import dotenv from 'dotenv'
+dotenv.config()
 
-let redisConfig = envconfig.redis
-redis.createClient(redisConfig.port, redisConfig.host, {
-  password: redisConfig.password
+let redisConfig = {
+  host: process.env.REDIS_HOST || '127.0.0.1',
+  port: process.env.REDIS_PORT || 6379,
+  password: process.env.REDIS_PASSWORD || '',
+  db: process.env.REDIS_DB || 'turing'
+}
+export default redis.createClient(redisConfig.port, redisConfig.host, {
+  password: redisConfig.password //, 
+  //  db:redisConfig.db
 })
-
-redis.on('connect', function () {
-  logger.info('Redis client connected')
-})
-redis.on('error', function (err) {
-  logger.error('Something went wrong ' + err)
-})
-export default redis
