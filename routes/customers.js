@@ -8,7 +8,7 @@ const router = Router()
 router.route('/customer')
   .get(authenticate.verifyUser, controller.getCustomer())
   .put(authenticate.verifyUser, validate, controller.updateCustomerDetails())
-router.route('/customers').post(authenticate.verifyUser, validate, controller.signupCustomer())
+router.route('/customers').post(validate, controller.signupCustomer())
 
 router.put('/customers/address', authenticate.verifyUser, validate, controller.updateCustomerAddress())
 

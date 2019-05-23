@@ -34,7 +34,7 @@ function signupCustomer () {
 
 function getCustomer () {
   return asyncF(async (req, res) => {
-    const customer = await customerService.getCustomer(req.query.customer_id, false)
+    const customer = await customerService.getCustomerById(req.user.customer_id)
 
     if (isEmpty(customer)) {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
@@ -43,7 +43,9 @@ function getCustomer () {
         field
       })
     }
-    const customerJSON = globalFunc.createCustomerJSON(customer)
+    customer.dataValues.credit_card = globalFunc.maskCreditCard(customer.dataValues.credit_card)
+    let customerJSON = globalFunc.convertObjectValuesRecursive(customer.dataValues, null, '')
+
     return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
   })
 }
