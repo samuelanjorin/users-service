@@ -8,7 +8,7 @@ import logger from './errors/errorlogger'
  * @param {string} formData
  * @returns {Object}  JSON
  */
-export const postRequest = function (url, headers, formData) {
+const postRequest = function (url, headers, formData) {
   let headersConfig = {
     headers
   }
@@ -30,14 +30,13 @@ export const postRequest = function (url, headers, formData) {
  * @param {Object} header
  * @returns {Object}  JSON
  */
-export const getRequest = async function (url, headers) {
+const getRequest = async function (url) {
   try {
-    let headersConfig = {
-      headers
-    }
-    let response = await axios.get(url, headersConfig)
+    let response = await axios.get(url)
     return response
   } catch (err) {
     logger.error(err)
   }
 }
+
+export default { postRequest, getRequest }

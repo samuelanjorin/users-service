@@ -80,18 +80,21 @@ function updateCustomerAddress () {
 function facebookLogin () {
   return asyncF(async (req, res) => {
     const { access_token } = req.body
-    const { data: { email, name } } = await customerService.facebookVerification(access_token)
-    let customer = await customerService.getCustomer(email, false)
-    if (isEmpty(customer)) {
-      customer = await customerService.createCustomer({
-        email,
-        name,
-        password: '@#$%^!@#$@##$$$$%%^^^!@@###$$'
-      })
+
+    const response = await customerService.facebookLogin(access_token)
+    if (response === constants.ERROR_CODES.USR_03) {
+      let error = errorFormat(
+        { code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_03),
+          msg: response,
+          param: 'email',
+          status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
+      )
+      return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
     }
-    const customerJSON = globalFunc.createCustomerJSON(customer)
+    let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues)
+    customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
     return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
-  }, true)
+  })
 }
 function loginCustomer () {
   return asyncF(async (req, res) => {

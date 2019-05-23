@@ -14,6 +14,6 @@ router.post('/customers/login', validate, controller.loginCustomer())
 // router.put('/creditCard', authenticate.verifyUser, validate, controller.updateCustomerCreditCard())
 
 // router.put('/address', authenticate.verifyUser, validate, controller.updateCustomerAddress())
-router.post('/facebook', validate, controller.facebookLogin())
+router.post('/customers/facebook', validate, controller.facebookLogin())
 
 export default router

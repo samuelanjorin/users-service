@@ -40,6 +40,21 @@ async function createCustomer (payLoad) {
     return constants.ERROR_CODES.USR_04
   }
 }
+async function facebookLogin (access_token) {
+  let payLoad = await facebookVerification(access_token)
+  payLoad = payLoad.data
+  if (payLoad.email === (null || '')) {
+    return constants.ERROR_CODES.USR_03
+  }
+  payLoad.password = '@#$%^!@#$@##$$$$%%^^^!@@###$$'
+  let customer = await getCustomerByEmail(payLoad.email)
+  if (customer === null) {
+    await customerDb.create(payLoad)
+    customer = await getCustomerByEmail(payLoad.email)
+  }
+
+  return { customer: customer, access_token }
+}
 
 async function getLoginDetails (password, email) {
   let customer = await confirmPassword(password, email)
@@ -103,7 +118,7 @@ async function updateCustomerAddress (user) {
 export default {
   getCustomerById,
   createCustomer,
-  facebookVerification,
+  facebookLogin,
   updateCustomerDetails,
   updateCustomerAddress,
   updateCustomerCreditCard,
