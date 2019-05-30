@@ -123,11 +123,11 @@ export const signUpSchema = Joi.object().keys({
 
 export const signInSchema = Joi.object().keys({
   email: Joi.string()
-    .trim()
-    .required(),
-  password: Joi.string()
-    .trim()
     .required()
+    .trim(),
+  password: Joi.string()
+    .required()
+    .trim()
 })
 
 export const updateCustomerDetailsSchema = Joi.object().keys({

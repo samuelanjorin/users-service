@@ -35,7 +35,8 @@ const verifyUser = (req, res, next) => {
 }
 
 const generateToken = (customer_id) => {
-  return jwt.sign({ customer_id }, envconfig.appSecret, { expiresIn: envconfig.tokenExpiration })
+  const token = jwt.sign({ customer_id }, envconfig.appSecret, { expiresIn: envconfig.tokenExpiration })
+  return `Bearer ${token}`
 }
 
 export default { verifyUser, generateToken }

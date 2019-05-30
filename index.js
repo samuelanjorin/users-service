@@ -19,10 +19,11 @@ app.listen(port, () => {
   console.log(`Listening to port ${port}.......`)
 })
 
-
 process.on('uncaughtException', (ex) => {
   // logger.error(ex.message, ex)
 })
 process.on('unhandledRejection', (ex) => {
   logger.error(ex.message, ex)
 })
+
+export default app

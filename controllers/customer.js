@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import isEmpty from 'lodash.isempty'
 import customerService from '../services/customer'
 import asyncF from '../middlewares/async'
 import globalFunc from '../utils/globalfunc'
@@ -22,15 +21,13 @@ function signupCustomer () {
           param: 'email',
           status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
       )
-      return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
+      return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json(error)
     }
 
-
     let customerJSON = globalFunc.createCustomerJSON(response.customer, response.access_token)
-    console.log(customerJSON)
     if (customerJSON !== null) {
       customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
-      return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
+      return res.status(constants.NETWORK_CODES.HTTP_CREATED).json(customerJSON)
     }
   })
 }
@@ -39,7 +36,7 @@ function getCustomer () {
   return asyncF(async (req, res) => {
     const customer = await customerService.getCustomerById(req.user.customer_id)
 
-    if (isEmpty(customer)) {
+    if (customer !== null) {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
         code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_02),
         message: constants.ERROR_CODES.USR_02,
@@ -78,7 +75,7 @@ function updateCustomerAddress () {
     const response = await customerService.updateCustomerAddress(req)
     let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, access_token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
-    return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
+    return res.status(constants.NETWORK_CODES.HTTP_SUCCESS).json(customerJSON)
   }
   )
 }
@@ -113,11 +110,11 @@ function loginCustomer () {
           param: 'email',
           status: constants.NETWORK_CODES.HTTP_BAD_REQUEST }
       )
-      return res.json(error).status(constants.NETWORK_CODES.HTTP_BAD_REQUEST)
+      return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json(error)
     }
     let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, response.token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
-    return res.json(customerJSON).status(constants.NETWORK_CODES.HTTP_CREATED)
+    return res.status(constants.NETWORK_CODES.HTTP_SUCCESS).json(customerJSON)
   })
 }
 
