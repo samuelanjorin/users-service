@@ -34,5 +34,4 @@ const CACHE_HOUR = Object.freeze({
 
 })
 
-
 export default Object.assign({}, { ERROR_CODES, NETWORK_CODES, CACHE_TYPES, CACHE_HOUR })

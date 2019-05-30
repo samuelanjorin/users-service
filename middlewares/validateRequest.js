@@ -43,6 +43,7 @@ export default async (req, res, next) => {
   const validation = await validator(req.body, getSchema(req))
 
   if (validation.hasError) {
+    console.log('>>>>>', validation.error)
     return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json(
       validation.error
     )
