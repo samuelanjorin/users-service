@@ -6,7 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test jest index.test.js --coverage --forceExit",
     "serve": "NODE_ENV=development nodemon index.js --exec babel-node",
-    "migrate": "babel-node migrations/migrate.js",
+    "migrate": "NODE_ENV=production babel-node  migrations/migrate.js",
     "clean": "rm -rf dist",
     "build": "npm run clean && babel . -d dist --ignore node_modules,tests,coverage,logs,.dockerignore,.env,.env.example,.eslintrc,.gitignore,Dockerfile,index.html,babel.config.js",
     "start": "npm run build && NODE_ENV=production node dist/index.js",
