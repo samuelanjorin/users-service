@@ -27,8 +27,7 @@ const isValueValid = (id) => {
   return { valid, parsedId }
 }
 const createCustomerJSON = (customer, accessToken) => {
-  
-  if (customer.credit_card !== null) {
+  if (customer.credit_card) {
     let credit_card = customer.credit_card
     customer.creditCard = maskCreditCard(credit_card)
   }
@@ -60,6 +59,9 @@ function getToken (req) {
   return userKey[1]
 }
 function maskCreditCard (creditCard) {
-  return ((creditCard.length === 12) ? 'XXXXXXXX' + creditCard.substr(8, creditCard.length - 1) : creditCard)
+  if (creditCard) {
+    return ((creditCard.length === 12) ? 'XXXXXXXX' + creditCard.substr(8, creditCard.length - 1) : creditCard)
+  }
+  return ''
 }
 export default { getKeyByValue, getUniqueId, getPageParams, isValueValid, createCustomerJSON, convertObjectValuesRecursive, getToken, maskCreditCard }

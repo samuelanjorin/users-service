@@ -11,8 +11,8 @@ export default function asyncF (handler) {
     try {
       await handler(req, res)
     } catch (error) {
+      console.log('>>>>>>Errorr', error)
       next(error)
     }
   }
 }
-
