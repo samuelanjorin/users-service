@@ -71,7 +71,7 @@ function updateCustomerCreditCard () {
 
 function updateCustomerAddress () {
   return asyncF(async (req, res) => {
-    let access_token = globalFunc.getToken(req.headers)
+    let access_token = 'Bearer ' + globalFunc.getToken(req.headers)
     const response = await customerService.updateCustomerAddress(req)
     let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, access_token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')

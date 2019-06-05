@@ -1,13 +1,14 @@
 import sequelize from '../config/database'
 import fs from 'fs'
 import path from 'path'
+import logger from '../utils/errors/errorlogger'
 
 const dir = path.join(__dirname, './drop.sql')
 
 const sql = fs.readFileSync(dir).toString()
 
 sequelize.query(sql, { raw: true }).then(() => {
-  console.log('Table Dropped successfully')
+  logger.info('Table Dropped successfully')
 }).catch(error => {
-  console.error('Error', error)
+  logger.error('Error', error)
 })

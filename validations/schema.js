@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import Joi from 'joi'
-import { errorFormatter } from '../validator'
+import Joi from '@hapi/joi'
+import { errorFormatter } from './validator'
 
 /**
  * @description Get name validation schema

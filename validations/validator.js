@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi from '@hapi/joi'
 import constants from '../constants'
 import globalfunc from '../utils/globalfunc'
 

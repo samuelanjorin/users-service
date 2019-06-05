@@ -1,4 +1,4 @@
-import winston from 'winston'
+import winston from '../../node_modules/winston'
 
 // eslint-disable-next-line new-cap
 const logger = new winston.createLogger({

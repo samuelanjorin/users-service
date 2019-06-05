@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import shortId from 'shortid'
-import { removePassword } from '../utils/passwordcrypt'
+import { removePassword } from './passwordcrypt'
 // import constants from '../constants';
 import envconfig from '../config/envconfig'
 
