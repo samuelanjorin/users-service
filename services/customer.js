@@ -45,13 +45,14 @@ async function createCustomer (payLoad) {
 async function facebookLogin (access_token) {
   try {
     let payLoad = await facebookVerification(access_token)
+
     payLoad = payLoad.data
     if (payLoad.email === (null || '')) {
       return constants.ERROR_CODES.USR_03
     }
     payLoad.password = '@#$%^!@#$@##$$$$%%^^^!@@###$$'
     let customer = await getCustomerByEmail(payLoad.email, true)
-    if (customer === null) {
+    if (!customer) {
       await customerDb.create(payLoad)
       customer = await getCustomerByEmail(payLoad.email, true)
     }

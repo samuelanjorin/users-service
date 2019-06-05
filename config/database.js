@@ -1,14 +1,17 @@
 import config from './envconfig'
 import Sequelize from 'sequelize'
 
+const dbConfig = config[ process.env.NODE_ENV ]
+
 // Option 1: Passing parameters separately
 const sequelize = new Sequelize(
-  config.database.name,
-  config.database.username,
-  config.database.password,
+  dbConfig.name,
+  dbConfig.username,
+  dbConfig.password,
   {
-    host: config.database.host,
-    dialect: config.database.dialect
+    host: dbConfig.host,
+    dialect: dbConfig.dialect,
+    logging: false
   })
 sequelize
   .authenticate()

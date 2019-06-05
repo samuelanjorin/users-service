@@ -8,10 +8,7 @@ const {
   DATABASE_NAME,
   DATABASE_USERNAME,
   DATABASE_PASSWORD,
-  TEST_DIALECT,
-  TEST_DATABASE_HOST,
   TEST_DATABASE_NAME,
-  TEST_DATABASE_PASSWORD,
   TOKEN_EXPIRATION,
   FACEBOOK_URL,
   REDIS_HOST,
@@ -20,7 +17,7 @@ const {
 } = process.env
 
 export default {
-  database: {
+  development: {
     name: DATABASE_NAME,
     username: DATABASE_USERNAME,
     host: DATABASE_HOST,
@@ -28,11 +25,12 @@ export default {
     dialect: DIALECT
   },
 
-  unitTestDatabase: {
-    dbName: TEST_DATABASE_NAME,
-    host: TEST_DATABASE_HOST,
-    password: TEST_DATABASE_PASSWORD,
-    dialect: TEST_DIALECT
+  test: {
+    name: TEST_DATABASE_NAME,
+    username: DATABASE_USERNAME,
+    host: DATABASE_HOST,
+    password: DATABASE_PASSWORD,
+    dialect: DIALECT
   },
   appSecret: CLIENT_SECRET,
   tokenExpiration: TOKEN_EXPIRATION,
@@ -42,6 +40,12 @@ export default {
     password: REDIS_PASSWORD || '',
     port: REDIS_PORT || 6379
 
+  },
+  production: {
+    name: DATABASE_NAME,
+    username: DATABASE_USERNAME,
+    host: DATABASE_HOST,
+    password: DATABASE_PASSWORD,
+    dialect: DIALECT
   }
-
 }

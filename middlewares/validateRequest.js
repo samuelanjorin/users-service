@@ -8,7 +8,7 @@ import {
   updateCustomerDetailsSchema,
   productReviewSchema,
   facebookSchema
-} from '../validations/schemas/schema'
+} from '../validations/schema'
 
 /**
  * @description Get the schema definitions

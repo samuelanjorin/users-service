@@ -1,11 +1,3 @@
-// import redis from 'redis'
-// import envconfig from './envconfig'
-// import logger from '../utils/errors/errorlogger'
-
-// let redisConfig = envconfig.redis
-// redis.createClient(redisConfig.port, redisConfig.host, {
-//   password: redisConfig.password
-// })
 
 import redis from 'redis'
 import dotenv from 'dotenv'
@@ -18,6 +10,6 @@ let redisConfig = {
   db: process.env.REDIS_DB || 'turing'
 }
 export default redis.createClient(redisConfig.port, redisConfig.host, {
-  password: redisConfig.password //, 
+  password: redisConfig.password //
   //  db:redisConfig.db
 })

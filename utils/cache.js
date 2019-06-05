@@ -1,6 +1,6 @@
 import client from '../config/redis'
 import constants from '../constants'
-import networkStatus from '../utils/networkStatus'
+import networkStatus from './networkStatus'
 
 function lookCache (req, res, next) {
   const originalUrl = req.originalUrl

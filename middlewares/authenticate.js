@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import jwt from 'jsonwebtoken'
 import constants from '../constants'
-import globalFunctions from '../utils/globalFunc'
+import globalFunctions from '../utils/globalfunc'
 import envconfig from '../config/envconfig'
 
 const verifyUser = (req, res, next) => {
@@ -35,7 +35,8 @@ const verifyUser = (req, res, next) => {
 }
 
 const generateToken = (customer_id) => {
-  return jwt.sign({ customer_id }, envconfig.appSecret, { expiresIn: envconfig.tokenExpiration })
+  const token = jwt.sign({ customer_id }, envconfig.appSecret, { expiresIn: envconfig.tokenExpiration })
+  return `Bearer ${token}`
 }
 
 export default { verifyUser, generateToken }
