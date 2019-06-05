@@ -60,7 +60,7 @@ function getToken (req) {
 }
 function maskCreditCard (creditCard) {
   if (creditCard) {
-    return ((creditCard.length === 12) ? 'XXXXXXXX' + creditCard.substr(8, creditCard.length - 1) : creditCard)
+    return ((creditCard.length >= 12) ? 'XXXXXXXX' + creditCard.substr(8, creditCard.length - 1) : creditCard)
   }
   return ''
 }

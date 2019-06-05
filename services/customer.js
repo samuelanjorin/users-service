@@ -5,17 +5,21 @@ import { removePassword, comparePassword, hashPassword } from '../utils/password
 import authenticate from '../middlewares/authenticate'
 import constants from '../constants/index'
 import redisCache from '../utils/cache'
+import logger from '../utils/errors/errorlogger'
 
 redisCache.addToCache()
 const customerDb = db.customer
 
 async function getCustomerById (customer_id) {
-  let customer = await customerDb.findOne({
-    where: { customer_id }
-  })
-  return customer
+  try {
+    let customer = await customerDb.findOne({
+      where: { customer_id }
+    })
+    return customer
+  } catch (error) {
+    logger.error(error.message)
+  }
 }
-
 async function getCustomerByEmail (email, deletePassword) {
   let customer = await customerDb.findOne({
     where: { email }
@@ -105,13 +109,18 @@ async function updateCustomerAddress (req) {
 }
 async function updateCustomerDetails (req) {
   req.body.password = hashPassword(req.body.password)
-  await customerDb.update(
-    req.body,
-    { returning: true, where: { customer_id: req.user.customer_id } }
-  )
 
-  let customer = await getCustomerById(req.user.customer_id)
-  return { customer }
+  try {
+    await customerDb.update(
+      req.body,
+      { returning: true, where: { customer_id: req.user.customer_id } }
+    )
+    let customer = await getCustomerById(req.user.customer_id)
+
+    return { customer }
+  } catch (error) {
+    logger.error(error.errors[0].Error)
+  }
 }
 
 export default {
