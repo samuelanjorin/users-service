@@ -1,5 +1,6 @@
 import config from './envconfig'
 import Sequelize from 'sequelize'
+import logger from '../utils/errors/errorlogger'
 
 const dbConfig = config[ process.env.NODE_ENV ]
 
@@ -16,9 +17,9 @@ const sequelize = new Sequelize(
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.')
+    logger.info('Connection has been established successfully.')
   })
   .catch(err => {
-    console.error('Unable to connect to the database:', err)
+    logger.error('Unable to connect to the database:', err)
   })
 export default sequelize
