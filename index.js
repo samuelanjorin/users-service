@@ -20,10 +20,10 @@ app.listen(port, () => {
 })
 
 process.on('uncaughtException', (ex) => {
-  logger.error(ex.message, ex)
+  logger.error(ex.message)
 })
 process.on('unhandledRejection', (ex) => {
-  logger.error(ex.message, ex)
+  logger.error(ex.message)
 })
 
 export default app
