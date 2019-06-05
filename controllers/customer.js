@@ -36,13 +36,13 @@ function getCustomer () {
   return asyncF(async (req, res) => {
     const customer = await customerService.getCustomerById(req.user.customer_id)
 
-    if (!customer) {
+    if (customer === (null || undefined)) {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
         code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_02),
         message: constants.ERROR_CODES.USR_02,
         field
       })
-    }
+    }  
     customer.dataValues.credit_card = globalFunc.maskCreditCard(customer.dataValues.credit_card)
     let customerJSON = globalFunc.convertObjectValuesRecursive(customer.dataValues, null, '')
 
@@ -52,7 +52,15 @@ function getCustomer () {
 
 function updateCustomerDetails () {
   return asyncF(async (req, res) => {
+   
     const response = await customerService.updateCustomerDetails(req)
+    if (response === (null || undefined)) {
+      return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
+        code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.USR_01),
+        message: constants.ERROR_CODES.USR_01,
+        field
+      })
+    }
     response.customer.dataValues.credit_card = globalFunc.maskCreditCard(response.customer.dataValues.credit_card)
     let customerJSON = globalFunc.convertObjectValuesRecursive(response.customer.dataValues, null, '')
     return res.status(constants.NETWORK_CODES.HTTP_SUCCESS).json(customerJSON)
@@ -71,7 +79,7 @@ function updateCustomerCreditCard () {
 
 function updateCustomerAddress () {
   return asyncF(async (req, res) => {
-    let access_token = 'Bearer ' + globalFunc.getToken(req.headers)
+    let access_token = 'Bearer: ' + globalFunc.getToken(req.headers)
     const response = await customerService.updateCustomerAddress(req)
     let customerJSON = globalFunc.createCustomerJSON(response.customer.dataValues, access_token)
     customerJSON = globalFunc.convertObjectValuesRecursive(customerJSON, null, '')
