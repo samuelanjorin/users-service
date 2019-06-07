@@ -42,7 +42,7 @@ function getCustomer () {
         message: constants.ERROR_CODES.USR_02,
         field
       })
-    }  
+    }
     customer.dataValues.credit_card = globalFunc.maskCreditCard(customer.dataValues.credit_card)
     let customerJSON = globalFunc.convertObjectValuesRecursive(customer.dataValues, null, '')
 
@@ -52,7 +52,6 @@ function getCustomer () {
 
 function updateCustomerDetails () {
   return asyncF(async (req, res) => {
-   
     const response = await customerService.updateCustomerDetails(req)
     if (response === (null || undefined)) {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
